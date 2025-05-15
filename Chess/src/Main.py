@@ -16,10 +16,11 @@ INNER_BORDER = 10
 BORDER_OFFSET = OUTER_BORDER + INNER_BORDER  # Tổng offset từ góc trái
 
 
+
 def loadImages():
     pieces = ['wp', 'wR', 'wN', 'wB', 'wK', 'wQ', 'bp', 'bR', 'bN', 'bB', 'bK', 'bQ']
     for piece in pieces:
-        IMAGES[piece] = p.transform.scale(p.image.load("../images/" + piece + ".png"), (SQUARE_SIZE, SQUARE_SIZE))
+        IMAGES[piece] = p.transform.scale(p.image.load("../images/" + piece + ".png"), (SQUARE_SIZE*0.75, SQUARE_SIZE*0.75))
 
 
 def main():
@@ -146,7 +147,7 @@ def drawGameState(screen, game_state, valid_moves, square_selected):
 
 def drawBoard(screen):
     global colors
-    colors = [p.Color("beige"), p.Color("gray")]
+    colors = [p.Color("beige"), p.Color("brown")]
 
     board_x = BORDER_OFFSET
     board_y = BORDER_OFFSET
@@ -154,7 +155,7 @@ def drawBoard(screen):
     outer_rect = p.Rect(0, 0,
                         BOARD_WIDTH + 2 * BORDER_OFFSET,
                         BOARD_HEIGHT + 2 * BORDER_OFFSET)
-    p.draw.rect(screen, p.Color("gray"), outer_rect)
+    p.draw.rect(screen, p.Color("brown"), outer_rect)
 
     inner_rect = p.Rect(OUTER_BORDER, OUTER_BORDER,
                         BOARD_WIDTH + 2 * INNER_BORDER,
@@ -214,19 +215,19 @@ def highlightSquares(screen, game_state, valid_moves, square_selected):
 
 def drawPieces(screen, board):
     for row in range(DIMENSION):
-        for column in range(DIMENSION):
-            piece = board[row][column]
+        for col in range(DIMENSION):
+            piece = board[row][col]
             if piece != "--":
-                screen.blit(IMAGES[piece], p.Rect(
-                    BORDER_OFFSET + column * SQUARE_SIZE,
-                    BORDER_OFFSET + row * SQUARE_SIZE,
-                    SQUARE_SIZE, SQUARE_SIZE))
+                # Tính vị trí căn giữa
+                x = OUTER_BORDER + INNER_BORDER + col * SQUARE_SIZE + (SQUARE_SIZE - SQUARE_SIZE*0.75) // 2
+                y = OUTER_BORDER + INNER_BORDER + row * SQUARE_SIZE + (SQUARE_SIZE - SQUARE_SIZE*0.75) // 2
+                screen.blit(IMAGES[piece], p.Rect(x, y, SQUARE_SIZE*0.75, SQUARE_SIZE*0.75))
 
 
 def drawMoveLog(screen, game_state, font):
     move_log_rect = p.Rect(BOARD_WIDTH + 2 * BORDER_OFFSET, 0,
                            MOVE_LOG_PANEL_WIDTH, MOVE_LOG_PANEL_HEIGHT + 2 * BORDER_OFFSET)
-    p.draw.rect(screen, p.Color('black'), move_log_rect)
+    p.draw.rect(screen, p.Color('gray'), move_log_rect)
     move_log = game_state.move_log
     move_texts = []
     for i in range(0, len(move_log), 2):
@@ -244,7 +245,7 @@ def drawMoveLog(screen, game_state, font):
         for j in range(moves_per_row):
             if i + j < len(move_texts):
                 text += move_texts[i + j]
-        text_object = font.render(text, True, p.Color('white'))
+        text_object = font.render(text, True, p.Color('black'))
         text_location = move_log_rect.move(padding, text_y)
         screen.blit(text_object, text_location)
         text_y += text_object.get_height() + line_spacing
