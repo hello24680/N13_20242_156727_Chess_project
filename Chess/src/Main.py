@@ -314,9 +314,9 @@ def showDifficultyMenu():
     hard_button = p.Rect(125, 170, 150, 45)
 
     # Màu sắc
-    background_color = (139, 136, 120)
-    easy_color = (76, 175, 80)   # Xanh lá
-    hard_color = (244, 67, 54)   # Đỏ
+    background_color = (255, 245, 238)
+    easy_color = (222, 184, 135)
+    hard_color = (139, 115, 85)
 
     while True:
         screen.fill(background_color)
