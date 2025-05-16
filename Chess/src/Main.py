@@ -25,6 +25,7 @@ def loadImages():
 
 def main():
     p.init()
+    depth = showDifficultyMenu()
     screen = p.display.set_mode((BOARD_WIDTH + MOVE_LOG_PANEL_WIDTH + 2 * BORDER_OFFSET,
                                  BOARD_HEIGHT + 2 * BORDER_OFFSET))
     clock = p.time.Clock()
@@ -100,7 +101,7 @@ def main():
             if not ai_thinking:
                 ai_thinking = True
                 return_queue = Queue()
-                move_finder_process = Process(target=AI.findBestMove, args=(game_state, valid_moves, return_queue))
+                move_finder_process = Process(target=AI.findBestMove, args=(game_state, valid_moves, return_queue, depth))
                 move_finder_process.start()
 
             if not move_finder_process.is_alive():
@@ -292,6 +293,55 @@ def animateMove(move, screen, board, clock):
         p.display.flip()
         clock.tick(60)
 
+def draw_button(screen, rect, base_color, text, font, text_color, is_hovered):
+    # Làm sáng màu khi hover
+    color = [min(255, c + 30) for c in base_color] if is_hovered else base_color
+    p.draw.rect(screen, color, rect, border_radius=12)
+    text_surf = font.render(text, True, text_color)
+    text_rect = text_surf.get_rect(center=rect.center)
+    screen.blit(text_surf, text_rect)
+
+def showDifficultyMenu():
+    p.init()
+    screen = p.display.set_mode((400, 300))
+    p.display.set_caption("Chọn độ khó")
+
+    font = p.font.SysFont("Arial", 24)
+    title_font = p.font.SysFont("Arial", 32, bold=True)
+
+    # Định nghĩa nút
+    easy_button = p.Rect(125, 100, 150, 45)
+    hard_button = p.Rect(125, 170, 150, 45)
+
+    # Màu sắc
+    background_color = (139, 136, 120)
+    easy_color = (76, 175, 80)   # Xanh lá
+    hard_color = (244, 67, 54)   # Đỏ
+
+    while True:
+        screen.fill(background_color)
+        mouse_pos = p.mouse.get_pos()
+
+        # Vẽ tiêu đề
+        title_surface = title_font.render("Select Difficulty", True, (33, 33, 33))
+        screen.blit(title_surface, (200 - title_surface.get_width() // 2, 30))
+
+        # Vẽ các nút với hiệu ứng hover
+        draw_button(screen, easy_button, easy_color, "Easy", font, (255, 255, 255), easy_button.collidepoint(mouse_pos))
+        draw_button(screen, hard_button, hard_color, "Hard", font, (255, 255, 255), hard_button.collidepoint(mouse_pos))
+
+        # Xử lý sự kiện
+        for e in p.event.get():
+            if e.type == p.QUIT:
+                p.quit()
+                sys.exit()
+            elif e.type == p.MOUSEBUTTONDOWN:
+                if easy_button.collidepoint(e.pos):
+                    return 2  # độ khó dễ
+                elif hard_button.collidepoint(e.pos):
+                    return 3  # độ khó khó
+
+        p.display.flip()
 
 if __name__ == "__main__":
     main()
