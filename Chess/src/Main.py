@@ -147,7 +147,7 @@ def drawGameState(screen, game_state, valid_moves, square_selected):
 
 def drawBoard(screen):
     global colors
-    colors = [p.Color("beige"), p.Color("brown")]
+    colors = [(238, 238, 210), (118, 150, 86)]  # RGB cho beige và black
 
     board_x = BORDER_OFFSET
     board_y = BORDER_OFFSET
@@ -155,12 +155,12 @@ def drawBoard(screen):
     outer_rect = p.Rect(0, 0,
                         BOARD_WIDTH + 2 * BORDER_OFFSET,
                         BOARD_HEIGHT + 2 * BORDER_OFFSET)
-    p.draw.rect(screen, p.Color("brown"), outer_rect)
+    p.draw.rect(screen, (118, 150, 86), outer_rect)  # viền ngoài đen
 
     inner_rect = p.Rect(OUTER_BORDER, OUTER_BORDER,
                         BOARD_WIDTH + 2 * INNER_BORDER,
                         BOARD_HEIGHT + 2 * INNER_BORDER)
-    p.draw.rect(screen, p.Color("beige"), inner_rect)
+    p.draw.rect(screen, (238, 238, 210), inner_rect)  # viền trong beige
 
     for row in range(DIMENSION):
         for column in range(DIMENSION):
@@ -175,19 +175,21 @@ def drawBoard(screen):
     numbers = ['8', '7', '6', '5', '4', '3', '2', '1']
 
     total_border = INNER_BORDER + OUTER_BORDER
-    # Vẽ chữ cái a-h phía trên và dưới viền đen ngoài cùng
+
+    # Vẽ chữ cái a-h phía dưới viền đen ngoài cùng
     for i in range(DIMENSION):
-        text_surface = font.render(letters[i], True, p.Color("beige"))  # chữ trắng trên nền đen
+        text_surface = font.render(letters[i], True, (245, 245, 220))  # chữ màu beige trên nền đen
         x_pos = OUTER_BORDER + INNER_BORDER + i * SQUARE_SIZE + SQUARE_SIZE // 2 - text_surface.get_width() // 2
         y_pos_bottom = BOARD_HEIGHT + total_border + (OUTER_BORDER // 2) + 3
         screen.blit(text_surface, (x_pos, y_pos_bottom))
 
-    # Vẽ số 1-8 ở hai bên viền đen ngoài cùng
+    # Vẽ số 1-8 ở bên trái viền đen ngoài cùng
     for i in range(DIMENSION):
-        text_surface = font.render(numbers[i], True, p.Color("beige"))  # chữ trắng
+        text_surface = font.render(numbers[i], True, (245, 245, 220))  # chữ màu beige
         y_pos = OUTER_BORDER + INNER_BORDER + i * SQUARE_SIZE + SQUARE_SIZE // 2 - text_surface.get_height() // 2
         x_pos_left = (OUTER_BORDER // 2) - (text_surface.get_width() // 2)
         screen.blit(text_surface, (x_pos_left, y_pos))
+
 
 
 def highlightSquares(screen, game_state, valid_moves, square_selected):
